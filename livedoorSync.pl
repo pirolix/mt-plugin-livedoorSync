@@ -7,7 +7,7 @@ use XML::Atom::Client;
 
 use vars qw( $MYNAME $VERSION );
 $MYNAME = 'livedoorSync';
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use base qw( MT::Plugin );
 my $plugin = __PACKAGE__->new({
@@ -17,7 +17,7 @@ my $plugin = __PACKAGE__->new({
     version => $VERSION,
     author_name => 'Open MagicVox.net',
     author_link => 'http://www.magicvox.net/',
-#    doc_link => '',
+    doc_link => 'http://www.magicvox.net/archive/2009/02112112/',
     description => <<PERLHEREDOC,
 <__trans phrase="Synchronize the posted entry with livedoor blog">
 PERLHEREDOC
@@ -57,7 +57,9 @@ sub _entry_post_save {
 
         my $atom_entry = XML::Atom::Entry->new;
         $atom_entry->title ($entry->title);
-        $atom_entry->content (sprintf '<a href="%s">%s</a>', $entry->permalink, $entry->title);
+        $atom_entry->content (
+            sprintf "<a href=\"%s\">%s</a>\n\n%s",
+            $entry->permalink, $entry->title, $entry->text);
 
         my $PostURI = "http://cms.blog.livedoor.com/atom";
         $pdata->{EditURI} = $atom_client->createEntry ($PostURI, $atom_entry)
